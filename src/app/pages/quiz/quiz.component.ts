@@ -18,7 +18,7 @@ export class QuizComponent implements OnInit {
   remainingTime: number = 120;
 
   timer = interval(1000);
-  subscription: Subscription[] = [];
+  timerSubscription!: Subscription;
   correctAnswerCount: number = 0;
 
   formattedTime: string = '00:00';
@@ -31,7 +31,6 @@ export class QuizComponent implements OnInit {
 
   loadQuestions() {
     this.http.get('assets/questions.json').subscribe((res: any) => {
-      // debugger;
       this.questionsList = res;
     });
   }
@@ -43,17 +42,14 @@ export class QuizComponent implements OnInit {
   startQuiz() {
     this.showWarning = false;
     this.isQuizStarted = true;
-    this.subscription.push(
-      this.timer.subscribe((res) => {
-        if (this.remainingTime != 0) {
-          this.remainingTime--;
-          this.formattedTime = this.formatTime(this.remainingTime);
-        }
-        if (this.remainingTime == 0) {
-          this.nextQuestion();
-        }
-      })
-    );
+    this.timerSubscription = interval(1000).subscribe(() => {
+      if (this.remainingTime !== 0) {
+        this.remainingTime--;
+        this.formattedTime = this.formatTime(this.remainingTime);
+      } else {
+        this.nextQuestion();
+      }
+    });
   }
 
   selectOption(option: any) {
@@ -64,14 +60,7 @@ export class QuizComponent implements OnInit {
   }
 
   isOptionSelected(options: any) {
-    const selectionCount = options.filter(
-      (m: any) => m.isSelected == true
-    ).length;
-    if (selectionCount == 0) {
-      return false;
-    } else {
-      return true;
-    }
+    return options.some((option: any) => option.isSelected);
   }
 
   nextQuestion() {
@@ -79,9 +68,7 @@ export class QuizComponent implements OnInit {
     if (this.currentQuestionNo + 1 !== this.questionsList.length) {
       this.currentQuestionNo++;
     } else {
-      this.subscription.forEach((element) => {
-        element.unsubscribe();
-      });
+      this.timerSubscription.unsubscribe();
     }
   }
 
@@ -105,5 +92,11 @@ export class QuizComponent implements OnInit {
       .padStart(2, '0');
     const seconds: string = (time % 60).toString().padStart(2, '0');
     return `${minutes}:${seconds}`;
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
   }
 }

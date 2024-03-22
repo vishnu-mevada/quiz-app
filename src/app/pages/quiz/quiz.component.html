@@ -3,10 +3,10 @@
 <div class="info_box" [ngClass]="showWarning ? 'activeInfo':''">
   <div class="info-title"><span>Some Rules of this Quiz</span></div>
   <div class="info-list">
-    <div class="info">1. You will have only <span>15 seconds</span> each questions.</div>
-    <div class="info">2. Once you select your answer, It can't be undone.</div>
-    <div class="info">3. You can't select any options time goes off.</div>
-    <div class="info">4. You can't exit from the Quiz Once Started.</div>
+    <div class="info">1. You will have only <span>2 minutes</span> for each question.</div>
+    <div class="info">2. Once you select your answer, it can't be undone.</div>
+    <div class="info">3. You can't select any options once the time runs out.</div>
+    <div class="info">4. You can't exit from the Quiz once started.</div>
   </div>
   <div class="buttons">
     <button class="quit" (click)="start()">Exit Quiz</button>
@@ -53,7 +53,8 @@
     <div class="complete_text">You have completed the Quiz!</div>
 
     <div class="score_text">
-      <span>and congrats! You got <p>{{correctAnswerCount}}</p> out of <p>{{questionsList.length}}</p></span>
+      <span class="congrats" *ngIf="correctAnswerCount >= 3">and 🎉 congrats! You got <p>{{correctAnswerCount}}</p> out of <p>{{questionsList.length}}</p></span>
+      <span class="congrats" *ngIf="correctAnswerCount < 3"> 😢 Sorry! You got <p>{{correctAnswerCount}}</p> out of <p>{{questionsList.length}}</p></span>
     </div>
 
     <div class="buttons">

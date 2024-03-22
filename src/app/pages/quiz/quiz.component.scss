@@ -110,7 +110,7 @@ body {
 }
 
 .quiz_box {
-  width: 550px;
+  width: 850px;
   background: #fff;
   border-radius: 5px;
   transform: translate(-50%, -50%) scale(0.9);
@@ -338,6 +338,7 @@ footer button.show {
 
 .result_box .score_text span {
   display: flex;
+  align-items: baseline;
   margin: 10px 0;
   font-size: 18px;
   font-weight: 500;
